@@ -1,14 +1,7 @@
 import axios from 'axios';
 import { BASE_URL, THROTTLE_TIME, throttledGetDataFromApi } from './index';
 
-// const mockedGet = jest.fn();
-// jest.mock('axios', () => {
-//   const originalModule = jest.requireActual<typeof import('axios')>('axios');
-//   return {
-//     ...originalModule,
-//     create: () => mockedGet(),
-//   };
-// });
+jest.mock('axios');
 
 describe('throttledGetDataFromApi', () => {
   beforeAll(() => {
@@ -20,19 +13,41 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should create instance with provided base url', async () => {
-    const spy = jest.spyOn(axios, 'create');
-    const relativePath = '/users';
+    const relativePath = '/users/1';
+    const responseData = { id: 1, name: 'John Dow' };
+    (axios.create as jest.Mock).mockReturnValue({
+      get: jest.fn().mockResolvedValue({ data: responseData }),
+    });
 
     await throttledGetDataFromApi(relativePath);
-
     jest.advanceTimersByTime(THROTTLE_TIME);
 
-    expect(spy).toBeCalledWith({ baseURL: BASE_URL });
+    expect(axios.create).toHaveBeenCalledWith({ baseURL: BASE_URL });
   });
 
-  test('should perform request to correct provided url', async () => {});
+  test('should perform request to correct provided url', async () => {
+    const relativePath = '/users/1';
+    const responseData = { id: 1, name: 'John Dow' };
+    (axios.create as jest.Mock).mockReturnValue({
+      get: jest.fn().mockResolvedValue({ data: responseData }),
+    });
+
+    await throttledGetDataFromApi(relativePath);
+    jest.advanceTimersByTime(THROTTLE_TIME);
+
+    expect(axios.create().get).toHaveBeenCalledWith(relativePath);
+  });
 
   test('should return response data', async () => {
-    // Write your test here
+    const relativePath = '/users/1';
+    const responseData = { id: 1, name: 'John Dow' };
+    (axios.create as jest.Mock).mockReturnValue({
+      get: jest.fn().mockResolvedValue({ data: responseData }),
+    });
+
+    const result = await throttledGetDataFromApi(relativePath);
+    jest.advanceTimersByTime(THROTTLE_TIME);
+
+    expect(result).toEqual(responseData);
   });
 });
