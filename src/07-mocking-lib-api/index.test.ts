@@ -3,6 +3,9 @@ import { BASE_URL, THROTTLE_TIME, throttledGetDataFromApi } from './index';
 
 jest.mock('axios');
 
+const relativePath = '/users/1';
+const responseData = { id: 1, name: 'John Dow' };
+
 describe('throttledGetDataFromApi', () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -13,8 +16,6 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should create instance with provided base url', async () => {
-    const relativePath = '/users/1';
-    const responseData = { id: 1, name: 'John Dow' };
     (axios.create as jest.Mock).mockReturnValue({
       get: jest.fn().mockResolvedValue({ data: responseData }),
     });
@@ -26,8 +27,6 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should perform request to correct provided url', async () => {
-    const relativePath = '/users/1';
-    const responseData = { id: 1, name: 'John Dow' };
     (axios.create as jest.Mock).mockReturnValue({
       get: jest.fn().mockResolvedValue({ data: responseData }),
     });
@@ -39,8 +38,6 @@ describe('throttledGetDataFromApi', () => {
   });
 
   test('should return response data', async () => {
-    const relativePath = '/users/1';
-    const responseData = { id: 1, name: 'John Dow' };
     (axios.create as jest.Mock).mockReturnValue({
       get: jest.fn().mockResolvedValue({ data: responseData }),
     });
