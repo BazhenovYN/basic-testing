@@ -6,9 +6,14 @@ import {
   getBankAccount,
 } from '.';
 
-jest.mock('lodash', () => ({
-  random: jest.fn(),
-}));
+jest.mock('lodash', () => {
+  const originalModule = jest.requireActual<typeof import('lodash')>('lodash');
+  return {
+    __esModule: true,
+    ...originalModule,
+    random: jest.fn(),
+  };
+});
 
 afterEach(() => {
   (random as jest.Mock).mockReset();
